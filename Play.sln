@@ -40,9 +40,43 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{949B77A9-2
 		docs\README.md = docs\README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sources", "sources", "{C02099F1-6FAC-4886-A353-257DE442E2C1}"
+	ProjectSection(SolutionItems) = preProject
+		sources\Directory.Build.props = sources\Directory.Build.props
+		sources\Directory.Build.targets = sources\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicParser", "sources\MusicParser\MusicParser.csproj", "{15FFF8A5-CC49-40CA-969F-E7ED2C57F021}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{012CF632-263C-4D85-AEA1-91B005A167D0}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Directory.Build.props = tests\Directory.Build.props
+		tests\Directory.Build.targets = tests\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicParser.UnitTests", "tests\MusicParser.UnitTests\MusicParser.UnitTests.csproj", "{E3F0E0F1-DCFA-4988-AB42-8C5206BF5CD5}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15FFF8A5-CC49-40CA-969F-E7ED2C57F021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15FFF8A5-CC49-40CA-969F-E7ED2C57F021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15FFF8A5-CC49-40CA-969F-E7ED2C57F021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15FFF8A5-CC49-40CA-969F-E7ED2C57F021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3F0E0F1-DCFA-4988-AB42-8C5206BF5CD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3F0E0F1-DCFA-4988-AB42-8C5206BF5CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3F0E0F1-DCFA-4988-AB42-8C5206BF5CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3F0E0F1-DCFA-4988-AB42-8C5206BF5CD5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{15FFF8A5-CC49-40CA-969F-E7ED2C57F021} = {C02099F1-6FAC-4886-A353-257DE442E2C1}
+		{E3F0E0F1-DCFA-4988-AB42-8C5206BF5CD5} = {012CF632-263C-4D85-AEA1-91B005A167D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {41BCED2D-AF2E-4856-AD24-C262030AC5E0}

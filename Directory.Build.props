@@ -13,7 +13,7 @@
   <!-- Default settings that are used by other settings -->
   <PropertyGroup>
     <BaseArtifactsPath>$(MSBuildThisFileDirectory)artifacts/</BaseArtifactsPath>
-    <BaseArtifactsPathSuffix>$(MSBuildProjectName)</BaseArtifactsPathSuffix>
+    <BaseArtifactsPathSuffix>$(ProjectCategory)/$(MSBuildProjectName)</BaseArtifactsPathSuffix>
     <RepositoryUrl>https://github.com/tannergooding/play/</RepositoryUrl>
   </PropertyGroup>
 
