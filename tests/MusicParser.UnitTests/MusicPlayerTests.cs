@@ -85,5 +85,33 @@ namespace MusicParser.UnitTests
                 L2 C
             ");
         }
+
+        /// <summary>Plays Ode to Joy</summary>
+        [TestCase]
+        public static void PlayOdeToJoy()
+        {
+            var musicPlayer = new MusicPlayer();
+            musicPlayer.Play(@"
+                T200 O3 MN
+                L4 E E F G G F E D C C D E
+                L3 E
+                L8 D
+                L2 D
+                L4 E E F G G F E D C C D E
+                L3 D
+                L8 C
+                L2 C
+                L4 D D E C D
+                L8 E F
+                L4 E C D
+                L8 E F
+                L4 E D C D
+                L2 <G>
+                L4 E E F G G F E D C C D E
+                L3 D
+                L8 C
+                L2 C
+            ");
+        }
     }
 }
