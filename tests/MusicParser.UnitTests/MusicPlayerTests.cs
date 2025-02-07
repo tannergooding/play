@@ -106,7 +106,7 @@ namespace MusicParser.UnitTests
                 L4 E C D
                 L8 E F
                 L4 E D C D
-                L2 <G>
+                L2 < G >
                 L4 E E F G G F E D C C D E
                 L3 D
                 L8 C
