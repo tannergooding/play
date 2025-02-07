@@ -8,6 +8,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 ScriptRoot="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+architecture=''
 build=false
 ci=false
 configuration='Debug'
@@ -22,6 +23,10 @@ properties=''
 while [[ $# -gt 0 ]]; do
   lower="$(echo "$1" | awk '{print tolower($0)}')"
   case $lower in
+    --architecture)
+      architecture=$2
+      shift 2
+      ;;
     --build)
       build=true
       shift 1
@@ -69,9 +74,9 @@ function Build {
   logFile="$LogDir/$configuration/build.binlog"
 
   if [[ -z "$properties" ]]; then
-    dotnet build -c "$configuration" --no-restore -v "$verbosity" /bl:"$logFile" /err "$solution"
+    dotnet build -c "$configuration" --no-restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "$solution"
   else
-    dotnet build -c "$configuration" --no-restore -v "$verbosity" /bl:"$logFile" /err "${properties[@]}" "$solution"
+    dotnet build -c "$configuration" --no-restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "${properties[@]}" "$solution"
   fi
 
   LASTEXITCODE=$?
@@ -91,7 +96,7 @@ function CreateDirectory {
 
 function Help {
   echo "Common settings:"
-  echo "  --configuration <value>   Build configuration Debug, Release"
+  echo "  --configuration <value>   Build configuration (Debug, Release)"
   echo "  --verbosity <value>       Msbuild verbosity (q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic])"
   echo "  --help                    Print help and exit"
   echo ""
@@ -104,6 +109,7 @@ function Help {
   echo "Advanced settings:"
   echo "  --solution <value>        Path to solution to build"
   echo "  --ci                      Set when running on CI server"
+  echo "  --architecture <value>    Test Architecture (<auto>, amd64, x64, x86, arm64, arm)"
   echo ""
   echo "Command line arguments not listed above are passed through to MSBuild."
 }
@@ -112,9 +118,9 @@ function Pack {
   logFile="$LogDir/$configuration/pack.binlog"
 
   if [[ -z "$properties" ]]; then
-    dotnet pack -c "$configuration" --no-build --no-restore -v "$verbosity" /bl:"$logFile" /err "$solution"
+    dotnet pack -c "$configuration" --no-build --no-restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "$solution"
   else
-    dotnet pack -c "$configuration" --no-build --no-restore -v "$verbosity" /bl:"$logFile" /err "${properties[@]}" "$solution"
+    dotnet pack -c "$configuration" --no-build --no-restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "${properties[@]}" "$solution"
   fi
 
   LASTEXITCODE=$?
@@ -129,9 +135,9 @@ function Restore {
   logFile="$LogDir/$configuration/restore.binlog"
 
   if [[ -z "$properties" ]]; then
-    dotnet restore -v "$verbosity" /bl:"$logFile" /err "$solution"
+    dotnet restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "$solution"
   else
-    dotnet restore -v "$verbosity" /bl:"$logFile" /err "${properties[@]}" "$solution"
+    dotnet restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "${properties[@]}" "$solution"
   fi
 
   LASTEXITCODE=$?
@@ -146,9 +152,9 @@ function Test {
   logFile="$LogDir/$configuration/test.binlog"
 
   if [[ -z "$properties" ]]; then
-    dotnet test -c "$configuration" --no-build --no-restore -v "$verbosity" /bl:"$logFile" /err "$solution"
+    dotnet test -c "$configuration" --no-build --no-restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "$solution"
   else
-    dotnet test -c "$configuration" --no-build --no-restore -v "$verbosity" /bl:"$logFile" /err "${properties[@]}" "$solution"
+    dotnet test -c "$configuration" --no-build --no-restore -v "$verbosity" /p:Platform="Any CPU" /bl:"$logFile" /err "${properties[@]}" "$solution"
   fi
 
   LASTEXITCODE=$?
@@ -159,16 +165,20 @@ function Test {
   fi
 }
 
+if $help; then
+  Help
+  exit 0
+fi
+
 if $ci; then
   build=true
   pack=true
   restore=true
   test=true
-fi
 
-if $help; then
-  Help
-  exit 0
+  if [[ -z "$architecture" ]]; then
+    architecture="<auto>"
+  fi
 fi
 
 RepoRoot="$ScriptRoot/.."
@@ -182,6 +192,22 @@ CreateDirectory "$ArtifactsDir"
 
 LogDir="$ArtifactsDir/log"
 CreateDirectory "$LogDir"
+
+if [[ ! -z "$architecture" ]]; then
+  export DOTNET_CLI_TELEMETRY_OPTOUT=1
+  export DOTNET_MULTILEVEL_LOOKUP=0
+  export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
+
+  DotNetInstallScript="$ArtifactsDir/dotnet-install.sh"
+  wget -O "$DotNetInstallScript" "https://dot.net/v1/dotnet-install.sh"
+
+  DotNetInstallDirectory="$ArtifactsDir/dotnet"
+  CreateDirectory "$DotNetInstallDirectory"
+
+  . "$DotNetInstallScript" --channel 8.0 --version latest --install-dir "$DotNetInstallDirectory" --architecture "$architecture"
+
+  PATH="$DotNetInstallDirectory:$PATH:"
+fi
 
 if $restore; then
   Restore

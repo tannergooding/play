@@ -14,7 +14,7 @@ namespace MusicParser.UnitTests
         {
             var musicPlayer = new MusicPlayer();
 
-            for (int i = 0; i < 85; i++)
+            for (var i = 0; i < 85; i++)
             {
                 musicPlayer.Play($@"
                     T120 O3 MN
@@ -29,7 +29,7 @@ namespace MusicParser.UnitTests
         {
             var musicPlayer = new MusicPlayer();
 
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
                 musicPlayer.Play($@"
                     T120 O3 MN
